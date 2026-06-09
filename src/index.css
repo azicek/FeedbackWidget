@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+/* Fixed sidebar on tablet and desktop */
+@media (min-width: 768px) {
+  .sidebar-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 15rem; /* w-60 */
+    z-index: 30;
+  }
+}

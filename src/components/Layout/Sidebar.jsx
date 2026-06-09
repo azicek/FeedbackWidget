@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, MessageSquare, Settings, CreditCard, Home, LogOut } from 'lucide-react'
+import { LayoutDashboard, MessageSquare, Settings, CreditCard, Home, LogOut, X } from 'lucide-react'
 import { useAuth } from '../../Context/AuthContext'
 
 const links = [
@@ -10,7 +10,7 @@ const links = [
   { path: '/billing', label: 'Billing', icon: CreditCard },
 ]
 
-function Sidebar() {
+function Sidebar({ onClose }) {
   const { pathname } = useLocation()
   const { user, logout } = useAuth()
 
@@ -21,13 +21,25 @@ function Sidebar() {
     }
   }
 
+  const handleNavClick = () => {
+    if (onClose) onClose()
+  }
+
   return (
-    <div className="w-60 h-screen bg-white border-r border-gray-100 flex flex-col p-5 shadow-sm">
-      <div className="mb-10">
-        <h1 className="text-lg font-bold text-gray-900">
-          Feedback<span className="text-green-500">Widget</span>
-        </h1>
-        <p className="text-xs text-gray-400 mt-0.5">Analytics Dashboard</p>
+    <div className="w-60 h-screen bg-white border-r border-gray-100 flex flex-col p-5 shadow-sm overflow-y-auto sidebar-fixed">
+      <div className="mb-10 flex items-center justify-between">
+        <div className="flex-1">
+          <h1 className="text-lg font-bold text-gray-900">
+            Feedback<span className="text-green-500">Widget</span>
+          </h1>
+          <p className="text-xs text-gray-400 mt-0.5">Analytics Dashboard</p>
+        </div>
+        <button
+          onClick={handleNavClick}
+          className="md:hidden p-2 hover:bg-gray-50 rounded-lg transition"
+        >
+          <X size={18} className="text-gray-400" />
+        </button>
       </div>
 
       <nav className="flex flex-col gap-1">
@@ -35,6 +47,7 @@ function Sidebar() {
           <Link
             key={path}
             to={path}
+            onClick={handleNavClick}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
               pathname === path
                 ? 'bg-green-50 text-green-600 font-medium'
@@ -42,21 +55,21 @@ function Sidebar() {
             }`}
           >
             <Icon size={18} />
-            {label}
+            <span>{label}</span>
           </Link>
         ))}
       </nav>
 
       <div className="mt-auto">
         <div className="flex items-center gap-3 px-3 py-3 rounded-lg bg-gray-50 border border-gray-100">
-          <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">
+          <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
             {user?.username?.charAt(0).toUpperCase() || 'U'}
           </div>
-          <div className="flex-1">
-            <p className="text-xs font-medium text-gray-900">{user?.username || 'User'}</p>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-gray-900 truncate">{user?.username || 'User'}</p>
             <p className="text-xs text-gray-400">Free plan</p>
           </div>
-          <button onClick={handleLogout} className="text-gray-400 hover:text-red-400 transition">
+          <button onClick={handleLogout} className="text-gray-400 hover:text-red-400 transition flex-shrink-0">
             <LogOut size={14} />
           </button>
         </div>
